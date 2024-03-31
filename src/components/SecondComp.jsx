@@ -1,9 +1,12 @@
-export const SecondComp = ({ arr }) => {
+import { useState } from "react"
+
+export const SecondComp = () => {
+    const [text, setText] = useState('');
+    const handleChange = (e) => setText(e.target.value);
     return (
         <>
-            {
-                arr.map((i, ind) => <div key={ind}>{i}</div>)
-            }
+            <input type="text" onChange={handleChange} value={text}/>
+            <div>{text}</div>
         </>
     )
 }

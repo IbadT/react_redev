@@ -1,9 +1,17 @@
-export const ThirdComp = ({ bool }) => {
+import { useState } from "react"
+
+export const ThirdComp = () => {
+    const colors = ["red", "green", "blue", "yellow", "purple", "orange", "pink"];
+    const [color, setColor] = useState("white");
+    const changeColor = () => {
+        const randIndex = Math.floor(Math.random() * colors.length+1);
+        setColor(colors[randIndex]);
+    }
+    const style = { color }
     return (
         <>
-            {
-                `This is Boolean value ${bool}`
-            }
+            <div style={style}>Lorem ipsum dolor sit amet.</div>
+            <button onClick={changeColor}>Change color</button>
         </>
     )
 }
