@@ -1,21 +1,14 @@
-import { FirstComp } from './components/FirstComp';
-import { SecondComp } from './components/SecondComp';
-import { ThirdComp } from './components/ThirdComp';
 import './App.css';
-import { useState } from 'react';
+import LifecycleComponent from './components/LifecycleComponent';
+import { FunctionComponent } from './components/FunctionComponent';
 
 function App() {
-  const [count, setCount] = useState(0);
-
-  const handleClick = () => setCount(prev => prev+1)
   return (
     <div className="App">
       <header className="App-header">
-        <div>Количество раз: {count}</div>
-        <button onClick={handleClick}>Click</button>
-        <FirstComp />
-        <SecondComp />
-        <ThirdComp />
+        <LifecycleComponent />
+        <hr/>
+        <FunctionComponent />
       </header>
     </div>
   );
