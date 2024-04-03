@@ -11,8 +11,6 @@ export const List = React.memo(({ state, setState }) => {
         const newState = state.map((el) => el.id === elId ? {...el, title: "!!! "+el.title} : el);
         setState(newState);
     }
-
-    console.log(state);
     return (
         <ul>
             {
