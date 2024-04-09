@@ -44,6 +44,9 @@ function App() {
 
   return (
     <>
+    <nav>
+      
+    </nav>
       <input 
         ref={ref} 
         value={text} 
