@@ -1,6 +1,6 @@
 async function loginFetch(body) {
     try {
-        return await fetch("http://localhost:3000/api/user/login", {
+        return await fetch(process.env.REACT_APP_LOGIN_URL, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json; charset=utf-8"

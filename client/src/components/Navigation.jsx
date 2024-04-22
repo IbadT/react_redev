@@ -10,7 +10,7 @@ export const Navigation = () => {
     const handleClick = async () => {
         removeTokenFromLocalStorage("token");
         toast.success("You logged out", { autoClose: 800});
-        setTimeout(() => navigate("/login"), 1500)
+        setTimeout(() => navigate("/login"), 1700)
     }
 
     return (

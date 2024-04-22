@@ -1,38 +1,29 @@
 import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form"
-import { Space, Button, Input, Dropdown, Popover } from "antd"
-import { UserOutlined, DownOutlined } from '@ant-design/icons';
+import { Space, Button, Input, Dropdown, Popover } from "antd";
+import { DownOutlined } from '@ant-design/icons';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from "react-router-dom";
 import registerFetch from "../helpers/registerFetch.js";
 import loginFetch from "../helpers/loginFetch.js";
 import { setTokenToLocalStorage } from "../helpers/localstorages.ts";
+import items from "../items/items.js";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { schema } from "../schema/schema.js";
 
 
-const items = [
-    {
-      label: 'Мужской',
-      gender: "Male",
-      key: '1',
-      icon: <UserOutlined />,
-    },
-    {
-      label: 'Женский',
-      gender: "Female",
-      key: '2',
-      icon: <UserOutlined />,
-    },
-];
 
-
-// как использовать функцию register в прямом Input(antd)
 // как использовать register в поле dropdown 
 // как использовать маски для инпутов 
-  
-export const RegistrationForm = () => {
 
-    const { handleSubmit, setError, setFocus, control, formState: { errors } } = useForm();
+
+
+export const RegistrationForm = () => {
+    
+    const { handleSubmit, setError, setFocus, control, formState: { errors }, reset } = useForm({
+        resolver: yupResolver(schema)
+    });
     
     const [passState, setPassState] = useState(true);
     const [gender, setGender] = useState({ label: 'Введите пол' });
@@ -40,7 +31,7 @@ export const RegistrationForm = () => {
     
     useEffect(() => {
         setFocus("user_name");
-    });
+    }, [setFocus]);
       
     const handleMenuClick = (e) => {
         const { label, gender } = items.find(i => i.key === e.key);
@@ -53,10 +44,12 @@ export const RegistrationForm = () => {
     };
 
     const onSubmit = async (data) => {
-        const { user_name, email, compare_password, password, birth_date, phone_number } = data;
+        const { compare_password, password } = data;
         if(compare_password === password) {
-            data.gender = gender.gender;
-            const user = { user_name,email, password, birth_date, gender: gender.gender, phone_number };
+            const user = Object.fromEntries(
+                Object.entries({ ...data, gender: gender.gender })
+                    .filter(i => i[0] !== 'compare_password')
+            );
             const response = await registerFetch(user);
             if(response.status === 400) {
                 setError("email", {
@@ -68,6 +61,7 @@ export const RegistrationForm = () => {
                 const logingResponse = await loginFetch(data);
                 const logingResponseJson = await logingResponse.json();
                 setTokenToLocalStorage("token", logingResponseJson);
+                reset();
                 toast.success("Регистрация прошла успешно", { position: "bottom-left", autoClose: 600 });
                 setTimeout(() => navigate('/'), 1700);
             }
@@ -97,17 +91,29 @@ export const RegistrationForm = () => {
                         />
                     )}
                 />
-                {errors.user_name?.type === "required" && <p style={{ fontSize: "2vmin", marginBottom: "0" }}>This field is required</p>}
+                {errors.user_name?.type === "required" && 
+                    <div style={{ fontSize: "2vmin", color: "red", width: "100%" }}>This field is required</div>}
+                {errors.user_name?.message && 
+                    <div style={{ fontSize: "2vmin", color: "red", width: "100%"}}>{errors.user_name.message}</div>}
                 
 
                 <Controller 
                     name="email" 
                     rules={{ required: true }}
                     control={control} 
-                    render={(({ field }) => <Input allowClear placeholder="Email" style={{ marginTop: "2vh" }} {...field}/>)}  
+                    render={(({ field }) => (
+                            <Input 
+                                allowClear 
+                                placeholder="Email" 
+                                style={{ marginTop: "2vh" }} 
+                                {...field}
+                            />
+                    ))}  
                 />
-                {errors.email?.type === "required" && <p style={{ fontSize: "2vmin", marginBottom: "0" }}>Field email is required</p>}
-                {errors.email?.message && <p style={{ fontSize: "2vmin", marginBottom: "0" }}>Этот email уже используется</p>}
+                {errors.email?.type === "required" && 
+                    <div style={{ fontSize: "2vmin", color: "red", width: "100%" }}>Field email is required</div>}
+                {errors.email?.message && 
+                    <div style={{ fontSize: "2vmin", color: "red", width: "100%"}}>{errors.email.message}</div>}
 
 
                 <Controller 
@@ -122,13 +128,16 @@ export const RegistrationForm = () => {
                                 allowClear
                                 placeholder="Password" 
                                 style={{ marginTop: "2vh" }}
-                                pattern='^(?=.*[A-Z])(?=.*\d).{8,}$'
+                                // pattern='^(?=.*[A-Z])(?=.*\d).{8,}$'
                                 status= { !passState ? "error" : null }
                             />
                         </Popover>
                     ))}
                 />
-                {errors.password?.type === "required" && <p style={{ fontSize: "2vmin", marginBottom: "0" }}>Field password is required</p>}
+                {errors.password?.type === "required" && 
+                    <div style={{ fontSize: "2vmin", color: "red", width: "100%"}}>Field password is required</div>}
+                {errors.password?.message && 
+                    <div style={{ fontSize: "2vmin", color: "red", width: "100%"}}>{errors.password.message}</div>}
                 
 
                 <Controller 
@@ -143,13 +152,15 @@ export const RegistrationForm = () => {
                                 allowClear 
                                 style={{ marginTop: "2vh" }} 
                                 placeholder="Compare password" 
-                                pattern='^(?=.*[A-Z])(?=.*\d).{8,}$'
                                 status={ !passState ? "error" : null } 
                             />
                         </Popover>
                     ))}
                 />
-                {errors.compare_password?.type === "required" && <p style={{ fontSize: "2vmin", marginBottom: "0" }}>Field compare password is required</p>}
+                {errors.compare_password?.type === "required" && 
+                    <div style={{ fontSize: "2vmin", color: "red", width: "100%"}}>Field compare password is required</div>}
+                {errors.compare_password?.message && 
+                    <div style={{ fontSize: "2vmin", color: "red", width: "100%"}}>{errors.compare_password.message}</div>}
                 
 
                 <Controller 
@@ -168,35 +179,39 @@ export const RegistrationForm = () => {
                         </Popover>
                     ))}
                 />
-                {errors.birth_date?.type === "required" && <p style={{ fontSize: "2vmin", marginBottom: "0" }}>Field birth date is required</p>}
-                
+                {errors.birth_date?.type === "required" && <div style={{ fontSize: "2vmin", color: "red", width: "100%"}}>Field birth date is required</div>}
+                {errors.birth_date?.message && 
+                    <div style={{ fontSize: "2vmin", color: "red", width: "100%"}}>{errors.birth_date.message}</div>}
+
 
                 <Controller 
                     name="gender" 
+                    rules={{ required: true }}
                     control={control} 
                     render={(({ field }) => (
                         <Dropdown menu={menuProps}>
                             <Button {...field} style={{ width: "10vw", marginTop: "2vh" }}>
                                 <Space>
                                     { gender.label }
-                                    <DownOutlined />
+                                    <DownOutlined/> 
                                 </Space>
                             </Button>
                         </Dropdown>                    
                      ))}
                 />
-                {errors.gender?.type === "required" && <p style={{ fontSize: "2vmin", marginBottom: "0" }}>Field gender is required</p>}
-                
+                {errors.gender?.type === "required" && <div style={{ fontSize: "2vmin", color: "red"}}>Field gender is required</div>}
+                {errors.gender?.message && 
+                    <div style={{ fontSize: "2vmin", color: "red", width: "100%"}}>{errors.gender.message}</div>}
+
 
                 <Controller 
                     name="phone_number"
                     rules={{ required: true }} 
                     control={control} 
                     render={(({ field }) => (
-                        <Popover title="Phone number example" content="+375(29) 27 69 407" placement="left" trigger="focus">
+                        <Popover title="Phone number example" content="+375(29)-27-69-407" placement="left" trigger="focus">
                             <Input 
                                 allowClear 
-                                pattern="^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$"
                                 placeholder="Phone number" 
                                 style={{ marginTop: "2vh" }} 
                                 {...field}
@@ -204,8 +219,10 @@ export const RegistrationForm = () => {
                         </Popover>
                     ))}
                 />
-                {errors.phone_number?.type === "required" && <p style={{ fontSize: "2vmin", marginBottom: "0" }}>Field phone number is required</p>}
-                
+                {errors.phone_number?.type === "required" && <div style={{ fontSize: "2vmin", color: "red", width: "100%"}}>Field phone number is required</div>}                
+                {errors.phone_number?.message && 
+                    <div style={{ fontSize: "2vmin", color: "red", width: "100%"}}>{errors.phone_number.message}</div>}
+
                 <Button htmlType="submit" type="primary" style={{ marginTop: "1.5vh"}}>Register</Button>
 
             </form>
@@ -213,13 +230,3 @@ export const RegistrationForm = () => {
         </div>
     )
 };
-
-// const schema = object().shape({
-//     user_name: string().required("User name field is required"),
-//     email: string().email().required("Email field is required"),
-//     password: string().required("Password field is required").min(8, "password is too short"),
-//     compare_password: string().oneOf([ref("password"), "Пароли должны совпадать"]).required("Compare password is required"),
-//     birth_date: date().required("Birth date is required"), 
-//     gender: string().oneOf(["Male" || "Famele"]).required("Gender field is required"),
-//     phone_number: string().default("+375(29)-27-69-407").required("Phone number field is required")
-// });

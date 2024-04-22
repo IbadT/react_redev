@@ -15,7 +15,7 @@ export const LoginForm = () => {
 
     useEffect(() => {
         setFocus("email");
-    });
+    }, [setFocus]);
     
     const onSubmit = async (data) => {
         const response = await loginFetch(data);

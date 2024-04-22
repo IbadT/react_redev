@@ -1,6 +1,6 @@
 async function registerFetch(body) {
     try {
-        return await fetch("http://localhost:3000/api/user/register", {
+        return await fetch(process.env.REACT_APP_REGISTER_URL, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json; charset=utf-8"

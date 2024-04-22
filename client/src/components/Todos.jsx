@@ -8,9 +8,9 @@ export const Todos = () => {
     const [todos, setTodos] = useState([]);
 
     useEffect(() => {
-        fetch('http://localhost:3000/api/todo', {
+        fetch(process.env.REACT_APP_GET_TODOS, {
             headers: {
-                "Content-Type": "application/json; charset=utf-8 ",
+                "Content-Type": "application/json; charset=utf-8",
                 "Authorization": `Bearer ${token}`
             }
         })
