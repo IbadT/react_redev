@@ -1,26 +1,29 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useState } from 'react'
+import { InputField } from './components/InputField/InputField'
+import { TodoList } from './components/TodoList/TodoList';
+import { TodoTypes } from './types/TodoTypes';
+
 
 function App() {
+
+  const [todos, setTodos] = useState<TodoTypes[]>([]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div style={{ 
+        backgroundColor: "rgb(26, 26, 61)", 
+        borderRadius: "7px",
+        width: "50vw", display: "flex", 
+        justifyContent: "center", 
+        flexDirection: "column",
+        padding: "10%",
+        marginTop: "5vh"
+      }}
+    >
+      <h1 style={{ color: "white", textAlign: "center" }}>Get things done!</h1>
+      <InputField setTodos={setTodos}/>
+      <TodoList setTodos={setTodos} todos={todos}/>
     </div>
   );
-}
+};
 
 export default App;
