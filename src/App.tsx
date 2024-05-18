@@ -10,7 +10,7 @@ function App() {
 
   return (
     <div style={{ 
-        backgroundColor: "rgb(26, 26, 61)", 
+        backgroundColor: "rgb(26, 26, 61)",  
         borderRadius: "7px",
         width: "50vw", display: "flex", 
         justifyContent: "center", 

@@ -1,9 +1,9 @@
 import React from "react"
-import { Todo } from "../Todo/Todo"
-import { PropsType } from "./types/TodoListTypes"
+import { TodoListType } from "./types/TodoListTypes"
+import { TodoListWithLogging } from "../Todo/Todo"
 
 
-export const TodoList: React.FC<PropsType> = ({ todos, setTodos }) => {
+export const TodoList: React.FC<TodoListType> = ({ todos, setTodos }) => {
 
     return (
         <div style={{ marginTop: "4vh " }}>
@@ -11,7 +11,7 @@ export const TodoList: React.FC<PropsType> = ({ todos, setTodos }) => {
                 !todos.length ? 
                     null : 
                     todos?.map(({id, title, isCompleted}) => 
-                        <Todo setTodos={setTodos} key={id} id={id} title={title} isCompleted={isCompleted}/>
+                        <TodoListWithLogging setTodos={setTodos} key={id} id={id} title={title} isCompleted={isCompleted}/>
                     )
             }
         </div>

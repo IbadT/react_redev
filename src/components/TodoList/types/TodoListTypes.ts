@@ -1,6 +1,7 @@
 import { TodoTypes } from "../../../types/TodoTypes";
 
-export type PropsType = {
+export type TodoListType = {
     todos: TodoTypes[];
-    setTodos: (prev: TodoTypes[]) => void;
+    setTodos: (updater: (prev: TodoTypes[]) => TodoTypes[]) => void;
+    logUserAction?: (action: string) => void;
 }
