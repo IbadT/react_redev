@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { Button } from "../Buttons/Button"
 import { PropsType } from "./types/TodoTypes";
 import { TodoTypes } from "../../types/TodoTypes";
@@ -30,18 +30,17 @@ export const Todo: React.FC<PropsType> = ({ id, title, setTodos, isCompleted, lo
 
     const [isEditing, setIsEditing] = useState(false);
     const [state, setState] = useState<string>(title);
-    const ref = useRef(null);
 
-    const handleClick = (id: number) => {
+    const handleClick = (id: string) => {
         setTodos((prev: TodoTypes[]) => prev.map((i: TodoTypes) => i.id === id ? {...i, isCompleted: !i.isCompleted} : i));
     };
 
-    const handleEdit = (id: number) => {
+    const handleEdit = (id: string) => {
         setTodos((prev: TodoTypes[]) => prev.map((i: TodoTypes) => i.id === id ? {...i, title: state} : i));
         setIsEditing(prev => !prev);
     };
 
-    const handleDelete = (id: number) => {
+    const handleDelete = (id: string) => {
         setTodos((prev: TodoTypes[]) => prev.filter((i: TodoTypes) => i.id !== id));
     };
 
@@ -53,32 +52,38 @@ export const Todo: React.FC<PropsType> = ({ id, title, setTodos, isCompleted, lo
         }
     };
 
+
+    const executerFunction = (fn: void, str: string) => {
+
+        handleLoggerFn(str);
+    }
+
+
     return (
         <div style={style}>
             {
                 isEditing ? (
                     <>
                         <input style={inputStyle} 
-                            ref={ref}
                             onClick={() => handleLoggerFn("Пользователь хочет изменить todo")}  
                             onKeyDown={() => handleLoggerFn(`Пользователь меняет todo на ${state}`)}
                             onChange={(e) => setState(e.target.value)} value={state}/>
-                        <Button handleClick={() => (handleEdit(id), handleLoggerFn(`User updated todo with id: ${id}`))}>Update</Button>
+                        <Button handleClick={() => executerFunction(handleEdit(id), `Пользователь изменил todo с id: ${id}`)}>Update</Button>
                     </>
                 ) : (
                     <>
-                    <div onClick={() => (handleClick(id), handleLoggerFn(!isCompleted ? `User completed the todo` : `User canceled completed the todo`))} 
+                    <div onClick={() => executerFunction(handleClick(id), !isCompleted ? `Пользователь выполнил todo` : `Пользователь отменил выполнение todo`)} 
                         style={{ width: "100%", color: "white", fontSize: "3vmin", textDecoration: isCompleted ? "line-through" : "none" }}
                     >
                         {title}
                     </div>
                     <div style={{ display: "flex", width: "7vw", justifyContent: "space-around" }}>
                         <Button 
-                            handleClick={() => (setIsEditing(prev => !prev), handleLoggerFn(`User click to EDIT button`))}>
+                            handleClick={() => executerFunction(setIsEditing(prev => !prev), `Пользователь нажал на кнопку EDIT`)}>
                                 <FaRegEdit />
                         </Button>
                         <Button 
-                            handleClick={() => (handleDelete(id), handleLoggerFn(`User click to DELETE button and deleted todo with id: ${id}`))}>
+                            handleClick={() => executerFunction(handleDelete(id), `Пользователь нажал на кнопку DELETE и удалил todo с id: ${id}`)}>
                                 <MdDelete />
                         </Button>
                     </div>

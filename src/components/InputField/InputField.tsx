@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { Button } from '../Buttons/Button'
 import { PropsType } from './types/InputFieldTypes';
 import { TodoTypes } from '../../types/TodoTypes';
+import { withLogging } from '../HOC/withLogger';
+import { v4 as uuidv4 } from 'uuid';
 
 const inputStyle = { 
     backgroundColor: "transparent",
@@ -11,18 +13,28 @@ const inputStyle = {
     fontSize: "4vmin"
 }
 
-export const InputField: React.FC<PropsType> = ({ setTodos }) => {
+const InputField: React.FC<PropsType> = ({ setTodos, logUserAction }) => {
     
     const [state, setState] = useState<string>('');
     
+    const handleLoggerFn = (message: string): void => {
+        if(logUserAction) {
+            return logUserAction(message);
+        } else {
+            console.log("ERROR");
+        }
+    };
+
     const handleClick = () => {
+
         setTodos((prev: TodoTypes[]) => [...prev, 
             { 
-                id: prev.length > 0 ? prev[prev.length-1].id+1 : 0, 
+                id: uuidv4(),
                 title: state, 
                 isCompleted: false 
             }
         ]);
+        handleLoggerFn(`Пользователь нажал на кнопку ADD TASK и добавил todo: ${state}`)
         setState('');
     };
 
@@ -31,6 +43,7 @@ export const InputField: React.FC<PropsType> = ({ setTodos }) => {
             <input 
                 placeholder="What is the task today?"
                 onChange={e => setState(e.target.value)}
+                onClick={() => handleLoggerFn("Пользователь хочет добавить todo")}
                 value={state}
                 style={inputStyle} 
             />
@@ -38,3 +51,5 @@ export const InputField: React.FC<PropsType> = ({ setTodos }) => {
         </div>
     )
 };
+
+export const InputFieldWithLogging = withLogging(InputField);

@@ -1,7 +1,7 @@
 import { TodoTypes } from "../../../types/TodoTypes"
 
 export type PropsType = {
-    id: number;
+    id: string;
     title: string;
     isCompleted: boolean;
     setTodos: (updater: (prev: TodoTypes[]) => TodoTypes[]) => void;
