@@ -1,20 +1,18 @@
 import React from "react"
 import { PropsType } from "./types/ButtonTypes"
+import { Button } from "antd";
+import styles from './style.module.css';
 
 
-const buttonStyle = { 
-    backgroundColor: "rgb(128, 90, 246)", 
-    color: "white", 
-    border: "none",
-    fontSize: "4vmin"
-};
-
-export const Button: React.FC<PropsType> = ({ handleClick, children }) => {
+export const CastomButton: React.FC<PropsType> = ({ handleClick, children }) => {
     return (
-        <button 
+        <Button
+            className={styles.button}
             onClick={handleClick}
-            style={buttonStyle}>
-                { children }
-        </button>
+            htmlType="button"
+            size="large"
+        >
+            {children}
+        </Button>
     )
 }

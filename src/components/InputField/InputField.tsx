@@ -1,20 +1,16 @@
 import React, { useState } from 'react'
-import { Button } from '../Buttons/Button'
+import { CastomButton } from '../Buttons/Button'
 import { PropsType } from './types/InputFieldTypes';
 import { TodoTypes } from '../../types/TodoTypes';
 import { withLogging } from '../HOC/withLogger';
-import { v4 as uuidv4 } from 'uuid';
+import { Flex, Input } from 'antd';
+import styles from './style.module.css';
 
-const inputStyle = { 
-    backgroundColor: "transparent",
-    border: "1px solid rgb(128, 90, 246)",
-    width: "90%",
-    color: "white",
-    fontSize: "4vmin"
-}
+
 
 const InputField: React.FC<PropsType> = ({ setTodos, logUserAction }) => {
     
+    const token = localStorage.getItem('token');
     const [state, setState] = useState<string>('');
     
     const handleLoggerFn = (message: string): void => {
@@ -22,33 +18,39 @@ const InputField: React.FC<PropsType> = ({ setTodos, logUserAction }) => {
             return logUserAction(message);
         } else {
             console.log("ERROR");
-        }
+        };
     };
 
     const handleClick = () => {
+        fetch("https://todo-redev.herokuapp.com/api/todos", {
+            method: "POST",
+            headers: {
+                "Content-type": "application/json;charset=utf-8",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({ title: state[0].toUpperCase() + state.slice(1)})
+        })
+        .then(data => data.json())
+        .then(newTodo => setTodos((prev: TodoTypes[]) => [...prev, newTodo]))
+        .catch(({ message }) => console.log({ message }));
 
-        setTodos((prev: TodoTypes[]) => [...prev, 
-            { 
-                id: uuidv4(),
-                title: state, 
-                isCompleted: false 
-            }
-        ]);
         handleLoggerFn(`Пользователь нажал на кнопку ADD TASK и добавил todo: ${state}`)
         setState('');
     };
 
     return (
-        <div style={{ display: "flex" }}>
-            <input 
+        <Flex gap={5}>
+
+            <Input 
+                size='small'
                 placeholder="What is the task today?"
-                onChange={e => setState(e.target.value)}
+                onChange={e => setState(state.length > 0 ? e.target.value : e.target.value.toUpperCase())}
                 onClick={() => handleLoggerFn("Пользователь хочет добавить todo")}
                 value={state}
-                style={inputStyle} 
+                className={styles.inputField}
             />
-            <Button handleClick={handleClick}>Add task</Button>
-        </div>
+            <CastomButton handleClick={handleClick} title={state}>Add task</CastomButton>
+        </Flex>
     )
 };
 

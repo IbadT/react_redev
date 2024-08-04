@@ -1,0 +1,17 @@
+.todo { 
+    background-color: rgb(128, 90, 246); 
+    border-radius: 5px;
+    padding: 1vh;
+    align-items: center;
+}
+
+.inputStyle { 
+    background-color: transparent;
+    border: 1px solid rgb(128, 90, 246);
+    width: 100%;
+    color: white;
+}
+
+.inputStyle:hover {
+    color: black
+}

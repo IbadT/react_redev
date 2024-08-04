@@ -4,4 +4,5 @@ export type PropsType = {
     handleClick: () => void;
     handleEdit?: () => void;
     children: ReactNode;
+    title?: string
 }
