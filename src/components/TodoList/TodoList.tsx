@@ -19,6 +19,7 @@ export const TodoList = () => {
     const logout = () => {
         localStorage.removeItem('token')
         toast.success("You're successfully logged out", { autoClose: 2000, transition: Flip});
+        localStorage.clear();
         setTimeout(() => navigate('/login'), 2000)
     }
 
@@ -44,8 +45,8 @@ export const TodoList = () => {
                 <InputFieldWithLogging setTodos={setTodos}/>
                 <Flex vertical gap={20}>
                     {
-                        todos && 
-                        todos.map(({id, title, isCompleted}) => 
+                        todos.length && 
+                        todos?.map(({id, title, isCompleted}) => 
                             <TodoListWithLogging setTodos={setTodos} key={id} id={id} title={title} isCompleted={isCompleted}/>
                     )
                     }

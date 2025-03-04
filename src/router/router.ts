@@ -22,7 +22,7 @@ export const router = createBrowserRouter([
     ErrorBoundary: ErrorPage
   },
   {
-  path: "/error",
+    path: "/error",
     Component: ErrorPage
   },
   {

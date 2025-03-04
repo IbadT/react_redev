@@ -21,8 +21,9 @@ const InputField: React.FC<PropsType> = ({ setTodos, logUserAction }) => {
         };
     };
 
-    const handleClick = () => {
-        fetch("https://todo-redev.herokuapp.com/api/todos", {
+    const handleClick = async () => {
+        // try catch добавить //!!!!!!!!!!!!!!!!!!!!!
+        const responseJson = await fetch(`${process.env.REACT_APP_URL}/todos`, {
             method: "POST",
             headers: {
                 "Content-type": "application/json;charset=utf-8",
@@ -30,9 +31,10 @@ const InputField: React.FC<PropsType> = ({ setTodos, logUserAction }) => {
             },
             body: JSON.stringify({ title: state[0].toUpperCase() + state.slice(1)})
         })
-        .then(data => data.json())
-        .then(newTodo => setTodos((prev: TodoTypes[]) => [...prev, newTodo]))
-        .catch(({ message }) => console.log({ message }));
+        console.log({ responseJson });
+        
+        const todo = await responseJson.json();
+        setTodos((prev: TodoTypes[]) => [...prev, todo])
 
         handleLoggerFn(`Пользователь нажал на кнопку ADD TASK и добавил todo: ${state}`)
         setState('');
@@ -49,7 +51,7 @@ const InputField: React.FC<PropsType> = ({ setTodos, logUserAction }) => {
                 value={state}
                 className={styles.inputField}
             />
-            <CastomButton handleClick={handleClick} title={state}>Add task</CastomButton>
+            <CastomButton handleFunc={handleClick} title={state}>Add task</CastomButton>
         </Flex>
     )
 };

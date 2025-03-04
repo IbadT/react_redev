@@ -4,11 +4,11 @@ import { Button } from "antd";
 import styles from './style.module.css';
 
 
-export const CastomButton: React.FC<PropsType> = ({ handleClick, children }) => {
+export const CastomButton: React.FC<PropsType> = ({ handleFunc, children }) => {
     return (
         <Button
             className={styles.button}
-            onClick={handleClick}
+            onClick={handleFunc}
             htmlType="button"
             size="large"
         >

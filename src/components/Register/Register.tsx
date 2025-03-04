@@ -13,6 +13,13 @@ type RegisterType = {
     gender: string
 }
 
+type ErrorType = {
+    value: string | number;
+    msg: string;
+    param: string;
+    location: string;
+}
+
 
 export const Register = () => {
 
@@ -26,9 +33,7 @@ export const Register = () => {
             password,
             gender,
             age
-        }
-        console.log({result});
-        
+        };
 
         try {
             const registrarionResponseJSON = await fetch(`${process.env.REACT_APP_REGISTER_URL}`, {
@@ -40,7 +45,8 @@ export const Register = () => {
             });
             const response = await registrarionResponseJSON.json();
             if (registrarionResponseJSON.status !== 200) {
-                throw new Error(response.message);
+                throw new Error(JSON.stringify(response.errors));
+
             } else if (registrarionResponseJSON.status === 200) {
                 toast.success('Вы успешно зарегистрировались!', { autoClose: 2000 });
 
@@ -52,8 +58,10 @@ export const Register = () => {
                     body: JSON.stringify({ email, password })
                 });
                 const response = await loginResponseJSON.json();
+                
                 if(loginResponseJSON.status !== 200) {
-                    throw new Error(response.message)
+                    throw new Error(JSON.stringify(response.errors));
+
                 } else if( loginResponseJSON.status === 200 ) {
                     const { token } = await response;
                     localStorage.setItem('token', token);
@@ -68,7 +76,10 @@ export const Register = () => {
                 console.log({ response });
             }
         } catch (error) {
-            toast.error((error as Error).message, { autoClose: 2000, transition: Flip, });
+            const errors: ErrorType[] = JSON.parse((error as Error).message);
+            errors?.forEach(error => {
+                toast.error((error).msg, { autoClose: 2000, transition: Flip, });
+            })
         }
 
     };

@@ -17,21 +17,21 @@ export const Todo: React.FC<PropsType> = ({ id, title, setTodos, isCompleted, lo
     const [isEditing, setIsEditing] = useState(false);
     const [state, setState] = useState<string>(title);
 
-    const handleClick = (id: string) => {
-        fetch(`https://todo-redev.herokuapp.com/api/todos/${id}/isCompleted`, {
+    const handleClick = async (id: string) => {
+        const responseJson = await fetch(`${process.env.REACT_APP_URL}/todos/${id}/isCompleted`, {
             method: "PATCH",
             headers: {
                 "Content-type": "application/json;charset=utf-8",
                 "Authorization": `Bearer ${token}`
             }
         })
-        .then(data => data.json())
-        .then(data => setTodos((prev: TodoTypes[]) => prev.map((i: TodoTypes) => i.id === data[0].id ? data[0] : i)))
-        .catch(({ message }) => console.log(message));
+        const data = await responseJson.json();
+        setTodos((prev: TodoTypes[]) => prev.map((i: TodoTypes) => i.id === data[0].id ? data[0] : i))
+
     };
 
-    const handleEdit = (id: string) => {
-        fetch(`https://todo-redev.herokuapp.com/api/todos/${id}`, {
+    const handleEdit = async (id: string) => {
+        const responseJson = await fetch(`${process.env.REACT_APP_URL}/todos/${id}`, {
             method: "PATCH",
             headers: {
                 "Content-type": "application/json;charset=utf-8",
@@ -39,22 +39,21 @@ export const Todo: React.FC<PropsType> = ({ id, title, setTodos, isCompleted, lo
             },
             body: JSON.stringify({ title: state })
         })
-        .then(data => data.json())
-        .then(data => setTodos((prev: TodoTypes[]) => prev.map((i: TodoTypes) => i.id === id ? {...data} : i)))
-        .catch(({ message }) => console.log(message));
+        const data = await responseJson.json();
+        setTodos((prev: TodoTypes[]) => prev.map((i: TodoTypes) => i.id === id ? {...data} : i ))
         setIsEditing(prev => !prev);
     };
 
-    const handleDelete = (id: string) => {
-        fetch(`https://todo-redev.herokuapp.com/api/todos/${id}`, {
+    const handleDelete = async (id: string) => {
+        const responseJson = await fetch(`${process.env.REACT_APP_URL}/todos/${id}`, {
             method: "DELETE",
             headers: {
                 "Authorization": `Bearer ${token}`
             }
         })
-        .then(data => data.json())
-        .then(data => setTodos((prev: TodoTypes[]) => prev.filter((i: TodoTypes) => i.id !== data.id)))
-        .catch(({ message }) => console.log(message));
+
+        const data = await responseJson.json();
+        setTodos((prev: TodoTypes[]) => prev.filter((i: TodoTypes) => i.id !== data.id))
     };
 
     const handleLoggerFn = (message: string): void => {
@@ -65,9 +64,10 @@ export const Todo: React.FC<PropsType> = ({ id, title, setTodos, isCompleted, lo
         }
     };
 
-    const executerFunction = (fn: void, str: string) => {
+    const executerFunction = async (fn: Promise<void>, str: string, value: string) => {
+        // fn()
         handleLoggerFn(str);
-    }
+    };
 
     return (
         <Flex className={styles.todo}>
@@ -78,22 +78,22 @@ export const Todo: React.FC<PropsType> = ({ id, title, setTodos, isCompleted, lo
                             onClick={() => handleLoggerFn("Пользователь хочет изменить todo")}  
                             onKeyDown={() => handleLoggerFn(`Пользователь меняет todo на ${state}`)}
                             onChange={(e) => setState(e.target.value)} value={state}/>
-                        <CastomButton handleClick={() => executerFunction(handleEdit(id), `Пользователь изменил todo с id: ${id}`)}>Update</CastomButton>
+                        <CastomButton handleFunc={() => executerFunction(handleEdit(id), `Пользователь изменил todo с id: ${id}`, id)}>Update</CastomButton>
                     </Flex>
                 ) : (
                     <>
-                    <Flex onClick={() => executerFunction(handleClick(id), !isCompleted ? `Пользователь выполнил todo` : `Пользователь отменил выполнение todo`)} 
+                    <Flex onClick={() => executerFunction(handleClick(id), !isCompleted ? `Пользователь выполнил todo` : `Пользователь отменил выполнение todo`, id)} 
                         style={{ width: "100%", color: "white", fontSize: "3vmin", textDecoration: isCompleted ? "line-through" : "none" }}
                     >
                         {title}
                     </Flex>
                     <Flex style={{ display: "flex", width: "7vw", justifyContent: "space-around"}}>
                         <CastomButton 
-                            handleClick={() => executerFunction(setIsEditing(prev => !prev), `Пользователь нажал на кнопку EDIT`)}>
+                            handleFunc={() => executerFunction(handleEdit(id), `Пользователь нажал на кнопку EDIT`, id)}>
                                 <FaRegEdit />
                         </CastomButton>
                         <CastomButton 
-                            handleClick={() => executerFunction(handleDelete(id), `Пользователь нажал на кнопку DELETE и удалил todo с id: ${id}`)}>
+                            handleFunc={() => executerFunction(handleDelete(id), `Пользователь нажал на кнопку DELETE и удалил todo с id: ${id}`, id)}>
                                 <MdDelete />
                         </CastomButton>
                     </Flex>
