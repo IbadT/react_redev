@@ -10,3 +10,4 @@ package.json
 package-lock.json
 server/session_db.json
 server/src/data/result
+server/node_modules
