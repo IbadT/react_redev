@@ -1,0 +1,44 @@
+services:
+  # Сервис для PostgreSQL
+  db:
+    image: postgres:13
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: youtubespa
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  # Сервис для NestJS приложения
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nestjs_app
+    ports:
+      - "3000:3000"
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DB_DATABASE: youtubespa
+      TYPEORM_SYNCHRONIZE: "true" # Опционально: автоматическая синхронизация схемы
+    depends_on:
+      - db
+    networks:
+      - app-network
+
+# Определяем тома для хранения данных PostgreSQL
+volumes:
+  postgres_data:
+
+# Определяем сеть для взаимодействия контейнеров
+networks:
+  app-network:
+    driver: bridge

@@ -1,0 +1,12 @@
+{
+    "type": "postgres",
+    "host": "localhost",
+    "post": 5432,
+    "username": "postgres",
+    "password": "postgres",
+    "database": "youtube-spa",
+    "entities": ["src/migration/**/*.ts"],
+    "cli": {
+        "migrationDir": "src/migration"
+    }
+}
