@@ -82,13 +82,14 @@ export const SearchList: FC = () => {
     if (favorite_id && stateQuery.queryResults[favorite_id]) {
       const videos = stateQuery.queryResults[favorite_id];
 
-      const sortedType = stateQuery.queryList.find(
-        (item) => item.id === favorite_id
-      );
+      const sortedType = stateQuery.queryList.find((item) => item.id === favorite_id);
 
       const sortedVideos = sortVideos(videos, sortedType?.sorted || "none");
 
-      setItems(sortedVideos);
+      // setItems(sortedVideos);
+      const count = Number(sortedType?.maxCount) || 50;
+      setItems(sortedVideos.slice(0, count));
+      
       setSearchQuery({
         query: sortedType?.title || "",
         title: sortedType?.title || "",

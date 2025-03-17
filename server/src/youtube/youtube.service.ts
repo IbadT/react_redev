@@ -466,50 +466,50 @@ export class YoutubeService {
 
 
   async fetchYoutubeVideos(searchQuery: string, maxResults: string): Promise<any[]> {
-    return this.prod;
-    // // const API_KEY = this.configService.get<string>("YOUTUBE_API_KEY");
-    // const API_KEY = "AIzaSyCcicvMQVrDcHzTHUKaKaddIiofnh8P0f4";
-    // // 1. Поиск видео через метод search
-    // const searchUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${searchQuery}&type=video&maxResults=${maxResults}&key=${API_KEY}`;
-    // const searchResponse = await fetch(searchUrl);
+    // return this.prod;
+    // const API_KEY = this.configService.get<string>("YOUTUBE_API_KEY");
+    const API_KEY = "AIzaSyCcicvMQVrDcHzTHUKaKaddIiofnh8P0f4";
+    // 1. Поиск видео через метод search
+    const searchUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${searchQuery}&type=video&maxResults=${maxResults}&key=${API_KEY}`;
+    const searchResponse = await fetch(searchUrl);
 
-    // if (searchResponse.status !== 200) {
-    //   throw new BadRequestException('Ошибка при выполнении search-запроса');
-    // }
+    if (searchResponse.status !== 200) {
+      throw new BadRequestException('Ошибка при выполнении search-запроса');
+    }
 
-    // const searchData = await searchResponse.json();
+    const searchData = await searchResponse.json();
 
-    // // 2. Извлекаем ID видео
-    // const videoIds = searchData.items
-    //   .map((item: any) => item.id.videoId)
-    //   .filter((id: string) => id !== undefined); // Убираем undefined (если есть)
+    // 2. Извлекаем ID видео
+    const videoIds = searchData.items
+      .map((item: any) => item.id.videoId)
+      .filter((id: string) => id !== undefined); // Убираем undefined (если есть)
 
-    // if (videoIds.length === 0) {
-    //   throw new BadRequestException('Видео не найдены');
-    // }
+    if (videoIds.length === 0) {
+      throw new BadRequestException('Видео не найдены');
+    }
 
-    // // 3. Получаем информацию о видео через метод videos
-    // const videoUrl = `https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics&id=${videoIds.join(',')}&key=${API_KEY}`;
-    // const videoResponse = await fetch(videoUrl);
+    // 3. Получаем информацию о видео через метод videos
+    const videoUrl = `https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics&id=${videoIds.join(',')}&key=${API_KEY}`;
+    const videoResponse = await fetch(videoUrl);
 
-    // if (videoResponse.status !== 200) {
-    //   throw new BadRequestException('Ошибка при выполнении videos-запроса');
-    // }
+    if (videoResponse.status !== 200) {
+      throw new BadRequestException('Ошибка при выполнении videos-запроса');
+    }
 
-    // const videoData = await videoResponse.json();
+    const videoData = await videoResponse.json();
 
-    // // 4. Формируем результат с нужными данными, включая дату загрузки (publishedAt)
-    // const result = videoData.items.map((item: any) => ({
-    //   title: item.snippet.title,
-    //   videoId: item.id,
-    //   likeCount: item.statistics.likeCount,
-    //   viewCount: item.statistics.viewCount,
-    //   commentCount: item.statistics.commentCount,
-    //   description: item.snippet.description,
-    //   date: item.snippet.publishedAt, // Дата загрузки видео
-    // }));
+    // 4. Формируем результат с нужными данными, включая дату загрузки (publishedAt)
+    const result = videoData.items.map((item: any) => ({
+      title: item.snippet.title,
+      videoId: item.id,
+      likeCount: item.statistics.likeCount,
+      viewCount: item.statistics.viewCount,
+      commentCount: item.statistics.commentCount,
+      description: item.snippet.description,
+      date: item.snippet.publishedAt, // Дата загрузки видео
+    }));
 
-    // return result;
+    return result;
   }
 
 }

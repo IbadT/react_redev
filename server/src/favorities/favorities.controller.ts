@@ -1,6 +1,6 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, UsePipes, ValidationPipe } from '@nestjs/common';
 import { FavoritiesService, ResponseObject } from './favorities.service';
-import { CreateFavorityDto } from './dto/create-favority.dto';
+import { CreateFavoriteDto, CreateFavorityDto, CreateVideoDto } from './dto/create-favority.dto';
 import { UpdateFavorityDto } from './dto/update-favority.dto';
 import { ApiSecurity } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
@@ -26,13 +26,24 @@ export class FavoritiesController {
   @Post()
   async addFavorite(@Body() body: CreateFavorityDto, @Req() request: Request): Promise<FavoriteEntity> {
     const { id } = request.user;
-    console.log({
-      id,
-      body
-    });
-    
     return this.favoritiesService.addFavorite(id, body);
   };
+
+
+
+  // @Post()
+  // @UsePipes(new ValidationPipe({ transform: true })) // Валидация DTO
+  // async addFavorite(
+  //   @Body('favorite') favoriteData: CreateFavoriteDto, // Данные для QueryData
+  //   @Body('videos') videosData: CreateVideoDto[], // Данные для QueryResult[]
+  //   @Req() request: Request, // Запрос для получения user_id
+  // ) {
+  //   const { id } = request.user; // Получаем ID пользователя из запроса
+  //   return this.favoritiesService.addFavorite(id, favoriteData, videosData);
+  // }
+
+
+
 
   @Patch(":id")
   async updateFavorite(@Body() body: UpdateFavorityDto, @Param("id") id: string) {

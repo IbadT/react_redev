@@ -23,8 +23,7 @@ export const Favorites: FC = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);      
 
-  
-    // Получение данных
+
     useEffect(() => {
       const fetchData = async () => {
         setLoading(true);
@@ -32,29 +31,50 @@ export const Favorites: FC = () => {
   
         try {
           const url = "http://localhost:3000/api/favorities";
-        //   const response = await api.get<ResponseObject[]>('/favorities');
-          const response = await axios.get<ResponseObject[]>(url, {
+          let response = await axios.get<ResponseObject[]>(url, {
             headers: {
               Authorization: `Bearer ${localStorage.getItem('token')}`,
             },
           });
   
-          if (response.status !== 200) {
-            throw new Error('Network error');
-          };
-          console.log({ response });
-          
+          // Если токен истек (ошибка 401), обновляем его
+          if (response.status === 401) {
+            const refresh_token = localStorage.getItem("refresh_token");
+
+            // Обновляем токен
+            const { accessToken, refreshToken } = (await axios.post("http://localhost:3000/api/auth/refresh", {
+              refresh_token,
+            })).data;
   
-          response.data.forEach(item => {
+            // Сохраняем новые токены
+            localStorage.setItem('token', accessToken);
+            localStorage.setItem('refresh_token', refreshToken);
+  
+            // Повторяем запрос с новым токеном
+            response = await axios.get<ResponseObject[]>(url, {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
+            });
+          }
+  
+          // Обрабатываем данные
+          response.data.forEach((item) => {
             const { queryData, queryResult } = item;
-            const isDuplicate = queries.some(query => query.id === queryData.id);
+            const isDuplicate = queries.some((query) => query.id === queryData.id);
             if (!isDuplicate) {
-                dispatch(assignData({ queryList: queryData, queryResults: queryResult }));
+              dispatch(assignData({ queryList: queryData, queryResults: queryResult }));
             }
-            
-          })
+          });
         } catch (err: any) {
-          setError(err.message || 'Something went wrong');
+          if (err.response?.status === 401) {
+            // Если refresh token тоже истек, перенаправляем на страницу входа
+            localStorage.removeItem('token');
+            localStorage.removeItem('refresh_token');
+            window.location.href = '/login'; // Перенаправление на страницу входа
+          } else {
+            setError(err.message || 'Something went wrong');
+          }
         } finally {
           setLoading(false);
         }
@@ -62,6 +82,65 @@ export const Favorites: FC = () => {
   
       fetchData();
     }, [dispatch]);
+
+
+
+  
+    // Получение данных
+    // useEffect(() => {
+    //   const fetchData = async () => {
+    //     setLoading(true);
+    //     setError(null);
+  
+    //     try {
+    //       const url = "http://localhost:3000/api/favorities";
+    //       let response = await axios.get<ResponseObject[]>(url, {
+    //         headers: {
+    //           Authorization: `Bearer ${localStorage.getItem('token')}`,
+    //         },
+    //       });
+  
+    //       if (response.status !== 200) {
+    //         const refresh_token = localStorage.getItem("refresh_token");
+    //         console.log({ refresh_token });
+            
+    //         const { accessToken, refreshToken } = (await axios.post("http://localhost:3000/api/auth/refresh", {
+    //           refresh_token
+    //         })).data;
+    //         console.log({
+    //           accessToken,
+    //           refreshToken
+    //         });
+            
+    //         localStorage.setItem('token', accessToken);
+    //         localStorage.setItem('refresh_token', refreshToken);
+
+    //         response = await axios.get<ResponseObject[]>(url, {
+    //           headers: {
+    //             Authorization: `Bearer ${localStorage.getItem('token')}`,
+    //           },
+    //         });
+
+    //         throw new Error('Network error');
+    //       }
+  
+    //       response.data.forEach(item => {
+    //         const { queryData, queryResult } = item;
+    //         const isDuplicate = queries.some(query => query.id === queryData.id);
+    //         if (!isDuplicate) {
+    //           dispatch(assignData({ queryList: queryData, queryResults: queryResult }));
+    //         }
+            
+    //       })
+    //     } catch (err: any) {
+    //       setError(err.message || 'Something went wrong');
+    //     } finally {
+    //       setLoading(false);
+    //     }
+    //   };
+  
+    //   fetchData();
+    // }, [dispatch]);
 
     const [updatedId, setUpdatedId] = useState<string | null>(null);
     const navigate = useNavigate();

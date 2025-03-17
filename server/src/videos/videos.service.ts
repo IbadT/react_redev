@@ -19,7 +19,8 @@ export class VideosService {
     });
   };
 
-  async createVideos(body: CreateVideoDto) {
+  // async createVideos(body: CreateVideoDto) {
+  async createVideos(body: CreateVideoDto[]) {
     const video = this.videoRepository.create(body);
     return await this.videoRepository.save(video);
   };

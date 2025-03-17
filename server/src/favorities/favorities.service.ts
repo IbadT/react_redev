@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { CreateFavorityDto } from './dto/create-favority.dto';
+import { CreateFavoriteDto, CreateFavorityDto, CreateVideoDto } from './dto/create-favority.dto';
 import { UpdateFavorityDto } from './dto/update-favority.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FavoriteEntity } from './entities/favority.entity';
 import { In, Repository } from 'typeorm';
 import { VideosService } from 'src/videos/videos.service';
+import { VideoEntity } from 'src/videos/entities/video.entity';
 
 export interface QueryData {
   id: string;
@@ -37,6 +38,9 @@ export class FavoritiesService {
     @InjectRepository(FavoriteEntity)
     private readonly favoriteRepository: Repository<FavoriteEntity>,
     private readonly videosService: VideosService,
+
+    @InjectRepository(VideoEntity)
+    private readonly videoRepository: Repository<VideoEntity>,
   ) {}
 
   // async getAllFavorities(id: string): Promise<FavoriteEntity[]> {
@@ -73,10 +77,10 @@ export class FavoritiesService {
 
   async addFavorite(user_id: string, body: CreateFavorityDto): Promise<FavoriteEntity> {
     const { videoIds, ...anotherFields } = body;
-    console.log();
-    
-
+    console.log({ videoIds });
     const videos = await this.videosService.getAllVideos(videoIds);
+    console.log({ videos });
+    
 
     const favorite = this.favoriteRepository.create({
       user: { 
@@ -87,6 +91,41 @@ export class FavoritiesService {
     });
     return this.favoriteRepository.save(favorite);
   };
+
+
+
+
+
+  // async addFavorite(
+  //   user_id: string,
+  //   favoriteData: CreateFavoriteDto,
+  //   videosData: CreateVideoDto[],
+  // ): Promise<FavoriteEntity> {
+  //   // Создаем видео на основе videosData
+  //   const videos = await Promise.all(
+  //     videosData.map(async (videoData) => {
+  //       const video = this.videoRepository.create(videoData);
+  //       return this.videoRepository.save(video);
+  //     }),
+  //   );
+
+  //   // Создаем favorite
+  //   const favorite = this.favoriteRepository.create({
+  //     user: { id: user_id }, // Связываем с пользователем
+  //     videos, // Связываем с видео
+  //     ...favoriteData, // Остальные поля из favoriteData
+  //   });
+
+  //   // Сохраняем favorite в базе данных
+  //   return this.favoriteRepository.save(favorite);
+  // }
+
+
+
+
+
+
+
   
   async updateFavorite(id: string, body: Partial<CreateFavorityDto>) {
     const { videoIds, ...anotherFields } = body;

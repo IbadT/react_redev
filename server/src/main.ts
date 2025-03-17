@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import * as bodyParser from 'body-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -8,6 +9,8 @@ async function bootstrap() {
   app.setGlobalPrefix('api')
 
   app.enableCors();
+  app.use(bodyParser.json({ limit: "15mb" }))
+  app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }))
 
   const config = new DocumentBuilder()
   .setTitle('Youtube SPA documentation')

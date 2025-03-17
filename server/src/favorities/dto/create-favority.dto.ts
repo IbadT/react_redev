@@ -1,6 +1,84 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { ArrayNotEmpty, IsArray, IsNotEmpty, IsString } from "class-validator";
 
+export class CreateVideoDto {
+  @ApiProperty({ type: 'string', description: 'Заголовок видео', required: true })
+  @IsNotEmpty()
+  @IsString()
+  readonly title: string;
+
+  @ApiProperty({ type: 'string', description: 'ID видео', required: true })
+  @IsNotEmpty()
+  @IsString()
+  readonly videoId: string;
+
+  @ApiProperty({ type: 'string', description: 'Количество лайков', required: true })
+  @IsNotEmpty()
+  @IsString()
+  readonly likeCount: string;
+
+  @ApiProperty({ type: 'string', description: 'Количество просмотров', required: true })
+  @IsNotEmpty()
+  @IsString()
+  readonly viewCount: string;
+
+  @ApiProperty({ type: 'string', description: 'Количество комментариев', required: true })
+  @IsNotEmpty()
+  @IsString()
+  readonly commentCount: string;
+
+  @ApiProperty({ type: 'string', description: 'Описание видео', required: true })
+  @IsNotEmpty()
+  @IsString()
+  readonly description: string;
+
+  @ApiProperty({ type: 'string', description: 'Дата публикации', required: true })
+  @IsNotEmpty()
+  @IsString()
+  readonly date: string;
+}
+
+
+
+
+export class CreateFavoriteDto {
+  @ApiProperty({ type: 'string', description: 'Заголовок', required: true })
+  @IsNotEmpty()
+  @IsString()
+  readonly title: string;
+
+  @ApiProperty({ type: 'string', description: 'Имя', required: true })
+  @IsNotEmpty()
+  @IsString()
+  readonly name: string;
+
+  @ApiProperty({ type: 'string', description: 'Тип сортировки', required: true })
+  @IsNotEmpty()
+  @IsString()
+  readonly sorted: string;
+
+  @ApiProperty({ type: 'string', description: 'Максимальное количество', required: true })
+  @IsNotEmpty()
+  @IsString()
+  readonly maxCount: string;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 export class CreateFavorityDto {
     @ApiProperty({ type: 'string', description: "", required: true })
     @IsNotEmpty()

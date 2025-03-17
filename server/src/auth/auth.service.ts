@@ -41,8 +41,6 @@ export class AuthService {
 
   
   async register(body: AuthDto) {
-    console.log(true);
-    
     const userIsExist = await this.getUserByLogin(body.login);
     if(userIsExist) {
       throw new BadRequestException("Пользователь не зарегистрирован")
@@ -55,6 +53,8 @@ export class AuthService {
       login: body.login,
       password: hashedPassword
     });
+    console.log({ createdUser });
+    
     await this.userRepository.save(createdUser);
 
     // Генерация токенов

@@ -8,14 +8,8 @@ import { DecimalStep } from "./DecimalStep";
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import { removeSearchQuery } from "../../features/searchQuery/searchQuerySlice";
 import { RootState } from "../../features/store";
-import { QueryResult, setQueryLists } from "../../features/queryData/queryDataSlice";
+import { setQueryLists } from "../../features/queryData/queryDataSlice";
 import apiService from "../../services/ApiService";
-
-
-
-// interface ExtendedQueryResult extends QueryResult {
-//   id: string;
-// }
 
 
 
@@ -91,15 +85,13 @@ export const SaveRequest: FC = () => {
         const results = stateQueryResults[favorite_id];
         
         if (!results || results.length === 0) {
-          console.warn(`No query results found for favorite_id: ${favorite_id}`);
           return;
         };
 
-        const response = await Promise.all(results.map(async (item) => {
-          await apiService.addQueryResults(item);
-          console.log(`Successfully sent item with id: ${item}`);
-        }));
+        const response = await apiService.addQueryResults(results);
+
         const videoIds: string[] = response.map((item: any) => item?.id);
+        
         await apiService.addQueryList({
           ...result,
           videoIds
@@ -148,6 +140,17 @@ export const SaveRequest: FC = () => {
       [name]: value,
     }));
   };
+
+
+  // !!!!!!!!!!!!! создает видео порциями !!!!!!!!!!!!
+  // async function sendInBatches(data: any[], batchSize: number) {
+  //   for (let i = 0; i < data.length; i += batchSize) {
+  //     const batch = data.slice(i, i + batchSize);
+  //     await Promise.all(batch.map(item => apiService.addQueryResults(item)));
+  //     console.log(`Batch ${i / batchSize + 1} sent`);
+  //   }
+  // }
+  
 
   return (
     <div className="bg-[#1390E5CC]">
