@@ -6,7 +6,7 @@ import { SearchMain } from "./SearchMain";
 import { ViewVideoResult } from "../Video/ViewVideoResult";
 import { QueryResult, addData } from "../../features/queryData/queryDataSlice";
 import { v4 as uuidv4 } from "uuid";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { fetchYoutube_GET_Videos } from "../../helpers/fetchYoutube";
 import * as Sentry from "@sentry/react";
 
@@ -66,6 +66,7 @@ export interface YoutubeItems {
 export const SearchList: FC = () => {
   const { favorite_id } = useParams<{ favorite_id: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useAppDispatch();
   const [searchQuery, setSearchQuery] = useState<ISearchQuery>({
     query: "",
@@ -165,6 +166,7 @@ export const SearchList: FC = () => {
       sorted: "none",
       maxCount: "10",
     };
+    sessionStorage.setItem('previousUrl', location.pathname);
     dispatch(addData({ queryList: queryListData, queryResults: items }));
     navigate(`/save-request/${queryListData.id}`);
   };

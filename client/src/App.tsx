@@ -25,7 +25,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path={"/login"} element={<Login />}/>
-        <Route path={"/register"} element={<Login />}/>
+        <Route path={"/sign-up"} element={<Login />}/>
         <Route element={<ProtectedRoute />}>
           <Route path={"/"} element={<MainPage />}>
             <Route path={"/favorites"} element={<Favorites />}/>

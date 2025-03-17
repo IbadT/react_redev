@@ -57,6 +57,16 @@ const dataSlice = createSlice({
       // Если необходимо обновлять queryList, например как массив
       state.queryList.push(queryList); // Если queryList — массив
     },
+
+    assignData(state, action: PayloadAction<{queryList: QueryData; queryResults: QueryResult[]; }>) {
+      const { queryList, queryResults } = action.payload;
+
+      state.queryList = [queryList];
+      state.queryResults = {
+        [queryList.id]: queryResults
+      }
+    },
+
     // Добавление нового запроса в список
     addQueryData(state, action: PayloadAction<QueryData>) {
       state.queryList.push(action.payload);
@@ -104,6 +114,7 @@ const dataSlice = createSlice({
 
 export const {
   addData,
+  assignData,
   addQueryData,
   removeQueryData,
   setQueryResults,

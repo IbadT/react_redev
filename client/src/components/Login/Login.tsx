@@ -32,14 +32,15 @@ export const Login: FC = () => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const url = `http://localhost:4200/auth${pathname}`;
+      const url = `http://localhost:3000/api/auth${pathname}`;
       // const url = `${process.env.REACT_APP_API_URL}/auth${pathname}`
-      // console.log({url});
-      
+
       const response: AxiosResponse = await axios.post(url, {
-        login,
-        password,
-      });
+          login,
+          password,
+        }
+      );
+      
       if (
         response.data &&
         response.data.accessToken &&
@@ -98,7 +99,7 @@ export const Login: FC = () => {
             />
           </svg>
 
-          <h3>{pathname === "/register" ? "Регистрация" : "Войти"}</h3>
+          <h3>{pathname === "/sign-up" ? "Регистрация" : "Войти"}</h3>
         </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col w-2/3 mx-auto">
@@ -134,14 +135,14 @@ export const Login: FC = () => {
               type="primary"
               size="large"
             >
-              {pathname === "/register" ? "Зарегистрироваться" : "Войти"}
+              {pathname === "/sign-up" ? "Зарегистрироваться" : "Войти"}
             </Button>
           </div>
         </form>
 
         <Flex>
           <Link
-            to={pathname === "/register" ? "/login" : "/register"}
+            to={pathname === "/sign-up" ? "/login" : "/sign-up"}
             className={"underline"}
           >
             {pathname === "/login" ? "Зарегистрироваться" : "Войти"}

@@ -1,18 +1,68 @@
 import { Col, Empty, Flex, Row, Typography } from "antd"
-import { FC, useState } from "react"
+import { FC, useEffect, useState } from "react"
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import { RootState } from "../../features/store";
 import { useNavigate } from "react-router-dom";
 import { ModalToUpdateOrDelete } from "../Modal/ModalToUpdateOrDelete";
-import { removeQueryData } from "../../features/queryData/queryDataSlice";
+import { addData, assignData, removeQueryData } from "../../features/queryData/queryDataSlice";
+import useFavorities, { QueryData, QueryResult, ResponseObject } from "../../hooks/useFavorities";
+import { Loading } from "../Loading/Loading";
+import axios from "axios";
+import api from "../../api/axiosInstance";
+import apiService from "../../services/ApiService";
 
 
 const { Title } = Typography;
 
 export const Favorites: FC = () => {
+    // const { data, loading, error } = useFavorities("http://localhost:3000/api/favorities");
     const queries = useAppSelector((state: RootState) => state.queryData.queryList);
 
     const dispatch = useAppDispatch();
+
+    const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string | null>(null);      
+
+  
+    // Получение данных
+    useEffect(() => {
+      const fetchData = async () => {
+        setLoading(true);
+        setError(null);
+  
+        try {
+          const url = "http://localhost:3000/api/favorities";
+        //   const response = await api.get<ResponseObject[]>('/favorities');
+          const response = await axios.get<ResponseObject[]>(url, {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+          });
+  
+          if (response.status !== 200) {
+            throw new Error('Network error');
+          };
+          console.log({ response });
+          
+  
+          response.data.forEach(item => {
+            const { queryData, queryResult } = item;
+            const isDuplicate = queries.some(query => query.id === queryData.id);
+            if (!isDuplicate) {
+                dispatch(assignData({ queryList: queryData, queryResults: queryResult }));
+            }
+            
+          })
+        } catch (err: any) {
+          setError(err.message || 'Something went wrong');
+        } finally {
+          setLoading(false);
+        }
+      };
+  
+      fetchData();
+    }, [dispatch]);
+
     const [updatedId, setUpdatedId] = useState<string | null>(null);
     const navigate = useNavigate();
 
@@ -20,9 +70,17 @@ export const Favorites: FC = () => {
         navigate(`/save-request/${id}`)
     };
 
-    const handleDeleteFavorites = (id: string) => {
-        dispatch(removeQueryData(id))
+    const handleDeleteFavorites = async (id: string) => {
+        try {
+            await apiService.deleteFavorite(id);
+            dispatch(removeQueryData(id));
+        } catch (error) {
+            console.error(`Ошибка при удалении ${error}`);
+        }
     };
+
+    if (loading) return <Flex className="h-[20vh]" justify={"center"} align={"center"}><Loading /></Flex>;
+    if (error) return <div>Error: {error}</div>;
     
     return (
         <>

@@ -8,7 +8,16 @@ import { DecimalStep } from "./DecimalStep";
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import { removeSearchQuery } from "../../features/searchQuery/searchQuerySlice";
 import { RootState } from "../../features/store";
-import { setQueryLists } from "../../features/queryData/queryDataSlice";
+import { QueryResult, setQueryLists } from "../../features/queryData/queryDataSlice";
+import apiService from "../../services/ApiService";
+
+
+
+// interface ExtendedQueryResult extends QueryResult {
+//   id: string;
+// }
+
+
 
 export const SaveRequest: FC = () => {
   const { favorite_id } = useParams();
@@ -16,6 +25,10 @@ export const SaveRequest: FC = () => {
   const stateQueryList = useAppSelector((state: RootState) =>
     state.queryData.queryList.find((item) => item.id === favorite_id)
   );
+  const stateQueryResults = useAppSelector((state: RootState) => 
+    state.queryData.queryResults
+  );
+
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
@@ -39,7 +52,7 @@ export const SaveRequest: FC = () => {
   }, []);
 
   // Обработчик сохранения
-  const saveHandler = () => {
+  const saveHandler = async () => {
     if (
       !state.title ||
       !state.name ||
@@ -74,7 +87,30 @@ export const SaveRequest: FC = () => {
         sorted: state.sorted,
         maxCount: state.maxCount.toString(),
       };
-      dispatch(setQueryLists({ id: favorite_id, result }));
+      if(sessionStorage.getItem("previousUrl") === '/search') {
+        const results = stateQueryResults[favorite_id];
+        
+        if (!results || results.length === 0) {
+          console.warn(`No query results found for favorite_id: ${favorite_id}`);
+          return;
+        };
+
+        const response = await Promise.all(results.map(async (item) => {
+          await apiService.addQueryResults(item);
+          console.log(`Successfully sent item with id: ${item}`);
+        }));
+        const videoIds: string[] = response.map((item: any) => item?.id);
+        await apiService.addQueryList({
+          ...result,
+          videoIds
+        });
+
+        sessionStorage.clear();
+      } else {
+        
+        await apiService.updateFavorite(favorite_id, result);
+        dispatch(setQueryLists({ id: favorite_id, result }));
+      }
     }
 
     toast.success("🦄 Запрос успешно сохранен", {
