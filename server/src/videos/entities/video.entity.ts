@@ -13,7 +13,7 @@ export class VideoEntity {
     @Column({ type: "varchar", nullable: false })
     readonly videoId: string;
 
-    @Column({ type: "varchar", nullable: false })
+    @Column({ type: "varchar", nullable: false, default: "0" })
     readonly likeCount: string;
 
     @Column({ type: "varchar", nullable: false })

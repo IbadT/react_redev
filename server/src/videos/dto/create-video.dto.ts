@@ -13,7 +13,7 @@ export class CreateVideoDto {
     readonly videoId: string;
 
     @ApiProperty({ type: "string", description: "", required: true })
-    @IsNotEmpty()
+    // @IsNotEmpty()
     @IsString()
     readonly likeCount: string;
 

@@ -9,6 +9,7 @@ import { v4 as uuidv4 } from "uuid";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { fetchYoutube_GET_Videos } from "../../helpers/fetchYoutube";
 import * as Sentry from "@sentry/react";
+import apiService from "../../services/ApiService";
 
 export interface YoutubeVideoResponse {
   id: {
@@ -137,11 +138,12 @@ export const SearchList: FC = () => {
     try {
       // !!!!!! изменить на запрос на сервер
       const maxResults = 50;
-      const response = await fetchYoutube_GET_Videos({
-        maxResults,
-        query,
-        token: localStorage.getItem("token") || "",
-      });
+      // const response = await fetchYoutube_GET_Videos({
+      //   maxResults,
+      //   query,
+      //   token: localStorage.getItem("token") || "",
+      // });
+      const response = await apiService.fetchYoutube({maxResults, query});
 
       if (response.status === 200) {
         const { data } = response;

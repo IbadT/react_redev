@@ -465,13 +465,22 @@ export class YoutubeService {
 
 
 
-  async fetchYoutubeVideos(searchQuery: string, maxResults: string): Promise<any[]> {
+  async fetchYoutubeVideos(searchQuery: string, maxResults: string = "50"): Promise<any[]> {
     // return this.prod;
+    console.log({
+      searchQuery, maxResults
+    });
+    
     // const API_KEY = this.configService.get<string>("YOUTUBE_API_KEY");
     const API_KEY = "AIzaSyCcicvMQVrDcHzTHUKaKaddIiofnh8P0f4";
     // 1. Поиск видео через метод search
     const searchUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${searchQuery}&type=video&maxResults=${maxResults}&key=${API_KEY}`;
+    // const searchUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${searchQuery}&type=video&maxResults=${maxResults}&key=${API_KEY}`;
     const searchResponse = await fetch(searchUrl);
+    console.log({
+      searchResponse
+    });
+    
 
     if (searchResponse.status !== 200) {
       throw new BadRequestException('Ошибка при выполнении search-запроса');

@@ -182,7 +182,7 @@ export const Favorites: FC = () => {
                             className="bg-white h-10 px-4 hover:h-12 hover:shadow-2xl cursor-pointer transition-all duration-300"
                         >
                             <Row onClick={() => navigate(`/search/${id}`)} align={"middle"} className="w-[80%]">
-                                {title}
+                                {name}
                             </Row>
                             {updatedId === id && (
                                 <ModalToUpdateOrDelete

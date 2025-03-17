@@ -136,7 +136,10 @@ import { QueryResult, QueryData } from '../features/queryData/queryDataSlice';
 
 
 
-
+interface IFetchYoutube {
+  maxResults: number;
+  query: string;
+}
 
 
 class ApiService {
@@ -162,6 +165,14 @@ class ApiService {
     });
     return response.data;
   };
+
+  async fetchYoutube({ maxResults, query }: IFetchYoutube) {
+    const url = `${this.baseUrl}/youtube?searchQuery=${query}&maxResults=${maxResults}`;
+    return await axios.get(url, {
+      headers: this.getAuthHeader()
+    });
+  }
+  // export const fetchYoutube_GET_Videos = async ({ maxResults, query, token }: IFetchYoutube): Promise<AxiosResponse> => {
 
     // Добавление queryLists
     // async addQueryList(body: QueryData): Promise<QueryData> {

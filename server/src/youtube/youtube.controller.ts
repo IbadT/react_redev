@@ -9,6 +9,11 @@ export class YoutubeController {
 
   @Get()
   async fetchYoutubeVideos(@Query('searchQuery') searchQuery: string, @Query('maxResults') maxResults: string) {
+    console.log({
+      s: searchQuery,
+      m: maxResults
+    });
+    
     return this.youtubeService.fetchYoutubeVideos(searchQuery, maxResults);
   }
 }
