@@ -11,14 +11,6 @@ export class AuthController {
     private readonly authService: AuthService
   ) {}
 
-  // @ApiSecurity('JWT-auth')
-  // @UseGuards(JwtAuthGuard)
-  // @Get()
-  // async testData() {
-  //   return "Success"
-  // }
-
-
   @Post('login')
   async login(@Body() body: AuthDto) {
     return this.authService.login(body);

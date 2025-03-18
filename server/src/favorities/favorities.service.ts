@@ -93,46 +93,12 @@ export class FavoritiesService {
   };
 
 
-
-
-
-  // async addFavorite(
-  //   user_id: string,
-  //   favoriteData: CreateFavoriteDto,
-  //   videosData: CreateVideoDto[],
-  // ): Promise<FavoriteEntity> {
-  //   // Создаем видео на основе videosData
-  //   const videos = await Promise.all(
-  //     videosData.map(async (videoData) => {
-  //       const video = this.videoRepository.create(videoData);
-  //       return this.videoRepository.save(video);
-  //     }),
-  //   );
-
-  //   // Создаем favorite
-  //   const favorite = this.favoriteRepository.create({
-  //     user: { id: user_id }, // Связываем с пользователем
-  //     videos, // Связываем с видео
-  //     ...favoriteData, // Остальные поля из favoriteData
-  //   });
-
-  //   // Сохраняем favorite в базе данных
-  //   return this.favoriteRepository.save(favorite);
-  // }
-
-
-
-
-
-
-
   
   async updateFavorite(id: string, body: Partial<CreateFavorityDto>) {
     const { videoIds, ...anotherFields } = body;
 
     await this.favoriteRepository.update(id, {
       ...anotherFields,
-      // videos: videoIds
     });
 
     return this.favoriteRepository.findOne({ where: { id } });
