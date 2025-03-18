@@ -8,7 +8,6 @@ export class VideosController {
 
   @Post()
   @UsePipes(new ValidationPipe())
-  // async createVideos(@Body() body: CreateVideoDto) {
   async createVideos(@Body() body: CreateVideoDto[]) {
     return this.videosService.createVideos(body);
   }

@@ -1,11 +1,11 @@
 services:
   # Сервис для PostgreSQL
   db:
-    image: postgres:13
+    image: postgres:16
     container_name: postgres_db
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgresql
+      POSTGRES_PASSWORD: 7VozEDioECU40oPCqsnf5hwwvy8XJHRX
       POSTGRES_DB: youtubespa
     ports:
       - "5432:5432"
@@ -23,10 +23,10 @@ services:
     ports:
       - "3000:3000"
     environment:
-      DB_HOST: db
+      DB_HOST: dpg-cvclgfhu0jms73etg710-a
       DB_PORT: 5432
-      DB_USERNAME: postgres
-      DB_PASSWORD: postgres
+      DB_USERNAME: postgresql
+      DB_PASSWORD: 7VozEDioECU40oPCqsnf5hwwvy8XJHRX
       DB_DATABASE: youtubespa
       TYPEORM_SYNCHRONIZE: "true" # Опционально: автоматическая синхронизация схемы
     depends_on:

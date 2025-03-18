@@ -1,7 +1,6 @@
-import { IsNotEmpty, IsString } from "class-validator";
 import { UserEntity } from "src/auth/entities/user.entity";
 import { VideoEntity } from "src/videos/entities/video.entity";
-import { Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity("favorities")
 export class FavoriteEntity {
@@ -25,9 +24,6 @@ export class FavoriteEntity {
     @JoinColumn({ name: "user_id" }) // Указываем имя колонки в БД
     readonly user: UserEntity; // Используем сущность, а не ID
 
-    // @OneToOne(() => VideoEntity, (video) => video.favorite, { cascade: true })
-    // @JoinColumn({ name: "video_id" }) // Указываем имя колонки в БД
-    // readonly video: VideoEntity; // Используем сущность, а не ID
 
     @ManyToMany(() => VideoEntity, (video) => video.favorites, { cascade: true })
     @JoinTable({
@@ -50,11 +46,3 @@ export class FavoriteEntity {
     @UpdateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
     updatedAt: Date;
 };
-
-// export interface QueryData {
-//   id: string;
-//   title: string;
-//   name: string;
-//   sorted: string;
-//   maxCount: string;
-// }

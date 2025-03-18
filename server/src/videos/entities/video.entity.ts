@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsString } from "class-validator";
 import { FavoriteEntity } from "src/favorities/entities/favority.entity";
-import { Column, CreateDateColumn, Entity, ManyToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity("videos")
 export class VideoEntity {
@@ -29,9 +29,6 @@ export class VideoEntity {
     readonly date: string;
 
 
-    // @OneToOne(() => FavoriteEntity, (favorite) => favorite.video, { onDelete: "CASCADE" })
-    // readonly favorite: FavoriteEntity;
-
     @ManyToMany(() => FavoriteEntity, (favorite) => favorite.videos)
     favorites: FavoriteEntity[]; // Массив избранных списков
 
@@ -42,15 +39,3 @@ export class VideoEntity {
     @UpdateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
     updatedAt: Date;
 };
-
-
-// // Тип данных для результата
-// export interface QueryResult {
-//   title: string;
-//   videoId: string;
-//   likeCount: string;
-//   viewCount: string;
-//   commentCount: string;
-//   description: string;
-//   date: string;
-// }

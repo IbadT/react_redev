@@ -43,7 +43,6 @@ export class FavoritiesService {
     private readonly videoRepository: Repository<VideoEntity>,
   ) {}
 
-  // async getAllFavorities(id: string): Promise<FavoriteEntity[]> {
   async getAllFavorities(id: string): Promise<ResponseObject[]> {
     const response = await this.favoriteRepository.find({ 
       where: { user: { id }}, 
@@ -77,10 +76,8 @@ export class FavoritiesService {
 
   async addFavorite(user_id: string, body: CreateFavorityDto): Promise<FavoriteEntity> {
     const { videoIds, ...anotherFields } = body;
-    console.log({ videoIds });
-    const videos = await this.videosService.getAllVideos(videoIds);
-    console.log({ videos });
-    
+
+    const videos = await this.videosService.getAllVideos(videoIds);    
 
     const favorite = this.favoriteRepository.create({
       user: { 
