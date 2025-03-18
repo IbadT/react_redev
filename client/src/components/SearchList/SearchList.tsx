@@ -7,7 +7,6 @@ import { ViewVideoResult } from "../Video/ViewVideoResult";
 import { QueryResult, addData } from "../../features/queryData/queryDataSlice";
 import { v4 as uuidv4 } from "uuid";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { fetchYoutube_GET_Videos } from "../../helpers/fetchYoutube";
 import * as Sentry from "@sentry/react";
 import apiService from "../../services/ApiService";
 
@@ -136,18 +135,11 @@ export const SearchList: FC = () => {
     setError(null);
 
     try {
-      // !!!!!! изменить на запрос на сервер
       const maxResults = 50;
-      // const response = await fetchYoutube_GET_Videos({
-      //   maxResults,
-      //   query,
-      //   token: localStorage.getItem("token") || "",
-      // });
       const response = await apiService.fetchYoutube({maxResults, query});
 
       if (response.status === 200) {
         const { data } = response;
-        // console.log(data);
 
         setItems(data);
       } else {
@@ -185,6 +177,7 @@ export const SearchList: FC = () => {
   // Логика для пагинации
   const [currentPage, setCurrentPage] = useState<number>(1);
   const pageSize = 10; // Фиксированное количество элементов на странице
+  
   // Логика для пагинации
   const indexOfLastItem = currentPage * pageSize;
   const indexOfFirstItem = indexOfLastItem - pageSize;
@@ -222,7 +215,6 @@ export const SearchList: FC = () => {
             {loading && <Loading />}
             {error && <div>Ошибка: {error}</div>}
             
-            {/* <ViewVideoResult items={items} searchQuery={searchQuery.title} /> */}
             <ViewVideoResult items={currentItems} searchQuery={searchQuery.title} />
 
             {

@@ -4,11 +4,10 @@ import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import { RootState } from "../../features/store";
 import { useNavigate } from "react-router-dom";
 import { ModalToUpdateOrDelete } from "../Modal/ModalToUpdateOrDelete";
-import { addData, assignData, removeQueryData } from "../../features/queryData/queryDataSlice";
-import useFavorities, { QueryData, QueryResult, ResponseObject } from "../../hooks/useFavorities";
+import { assignData, removeQueryData } from "../../features/queryData/queryDataSlice";
+import { ResponseObject } from "../../hooks/useFavorities";
 import { Loading } from "../Loading/Loading";
 import axios from "axios";
-import api from "../../api/axiosInstance";
 import apiService from "../../services/ApiService";
 
 
@@ -30,7 +29,9 @@ export const Favorites: FC = () => {
         setError(null);
   
         try {
-          const url = "http://localhost:3000/api/favorities";
+          // const url = "http://localhost:3000/api/favorities";
+          const url = `${process.env.REACT_APP_API_URL}/favorities`;
+          
           let response = await axios.get<ResponseObject[]>(url, {
             headers: {
               Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -42,7 +43,7 @@ export const Favorites: FC = () => {
             const refresh_token = localStorage.getItem("refresh_token");
 
             // Обновляем токен
-            const { accessToken, refreshToken } = (await axios.post("http://localhost:3000/api/auth/refresh", {
+            const { accessToken, refreshToken } = (await axios.post(`${process.env.REACT_APP_API_URL}/auth/refresh`, {
               refresh_token,
             })).data;
   

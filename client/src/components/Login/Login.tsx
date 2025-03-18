@@ -32,17 +32,14 @@ export const Login: FC = () => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const url = `http://localhost:3000/api/auth${pathname}`;
-      // const url = `${process.env.REACT_APP_API_URL}/auth${pathname}`
+      // const url = `http://localhost:3000/api/auth${pathname}`;
+      const url = `${process.env.REACT_APP_API_URL}/auth${pathname}`;
 
-      console.log({login, password});
       const response: AxiosResponse = await axios.post(url, {
           login,
           password,
         }
       );
-      console.log({response});
-      
       
       if (
         response.data &&

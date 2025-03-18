@@ -25,11 +25,11 @@ export const SearchMain: FC<ISearchMainProps> = ({
   const updatedStatus = localStorage.getItem("updated");
   const [showSavedModal, setShowSavedModal] = useState<boolean>(false);
   const [isSearching, setIsSearching] = useState(false); // Новый state для отслеживания
-  const [currentSearchQuery, setCurrentSearchQuery] = useState<string>("");
+  // const [currentSearchQuery, setCurrentSearchQuery] = useState<string>("");
 
   const handleClick = () => {
+    // setCurrentSearchQuery(searchQuery);
     setIsSearching(true);
-    setCurrentSearchQuery(searchQuery);
     handleSearch();
   };
 

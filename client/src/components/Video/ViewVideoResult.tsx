@@ -32,7 +32,6 @@ export const ViewVideoResult: FC<IViewVideoResult> = ({
           )}
           <Row gutter={[16, 16]} justify="start">
             {
-              // items?.map(({ videoId, title, description, likeCount, viewCount, commentCount, date }) => (
               items?.map(({ videoId, title, description }) => (
                 <Col
                   key={videoId}
@@ -50,10 +49,6 @@ export const ViewVideoResult: FC<IViewVideoResult> = ({
                     description={description}
                     videoViewerIndex={activeIndex}
                   />
-                  {/* <div>лайки: {likeCount}</div>
-                                    <div>просмотры: {viewCount}</div>
-                                    <div>комментарии: {commentCount}</div>
-                                    <div>date: {formatDate.toReadable(date)}</div> */}
                 </Col>
               ))
             }
